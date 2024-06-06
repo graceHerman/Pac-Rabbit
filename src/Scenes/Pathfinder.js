@@ -11,6 +11,7 @@ class Pathfinder extends Phaser.Scene {
         this.SCALE = 2.0;
         this.TILEWIDTH = 40;
         this.TILEHEIGHT = 25;
+        this.playerSpeed = 2;
     }
 
     create() {
@@ -24,16 +25,31 @@ class Pathfinder extends Phaser.Scene {
         this.groundLayer = this.map.createLayer("Ground-n-Walkways", this.tileset, 0, 0);
         this.treesLayer = this.map.createLayer("Trees-n-Bushes", this.tileset, 0, 0);
         this.housesLayer = this.map.createLayer("Houses-n-Fences", this.tileset, 0, 0);
+        
+        /*// Create the layers
+        this.groundLayer = this.map.createLayer("Ground-n-Walkways", this.tileset, 0, 0);
+        my.sprite.purpleTownie = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
+        this.treesLayer = this.map.createLayer("Trees-n-Bushes", this.tileset, 0, 0);
+        this.housesLayer = this.map.createLayer("Houses-n-Fences", this.tileset, 0, 0);
+
+        this.housesLayer.setCollisionByProperty({ collides: true });
+        this.treesLayer.setCollisionByProperty({ collides: true });
+
+        // make it where the characters collide with the trees and houses
+        my.sprite.purpleTownie.setCollideWorldBounds(true);
+
+        // Enable collision handling
+        this.physics.add.collider(my.sprite.purpleTownie, this.housesLayer);
+        this.physics.add.collider(my.sprite.purpleTownie, this.treesLayer);*/
 
         // Create townsfolk sprite
         // Use setOrigin() to ensure the tile space computations work well
-        my.sprite.purpleTownie = this.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
+        my.sprite.purpleTownie = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
         my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
 
         //Figure out a way to have the game understand when two sprites are colliding.
         //This will help us increment score and add enemy damaging.
-
-        
+    
 
         // Camera settings
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -66,10 +82,17 @@ class Pathfinder extends Phaser.Scene {
         this.cKey = this.input.keyboard.addKey('C');
         this.lowCost = false;
 
+        // add key inputs for character movement AWSD
+        this.left = this.input.keyboard.addKey("A");
+        this.right = this.input.keyboard.addKey("D");
+        this.up = this.input.keyboard.addKey("W");
+        this.down = this.input.keyboard.addKey("S");
+        this.reset = this.input.keyboard.addKey("R");
+
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
+        /*if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
             if (!this.lowCost) {
                 // Make the path low cost with respect to grassy areas
                 this.setCost(this.tileset);
@@ -79,17 +102,51 @@ class Pathfinder extends Phaser.Scene {
                 this.resetCost(this.tileset);
                 this.lowCost = false;
             }
-        }
-    }
+        }*/
 
-    resetCost(tileset) {
-        for (let tileID = tileset.firstgid; tileID < tileset.total; tileID++) {
-            let props = tileset.getTileProperties(tileID);
-            if (props != null) {
-                if (props.cost != null) {
-                    this.finder.setTileCost(tileID, 1);
-                }
+        /*// make the character move
+        // Moving left
+        if (this.left.isDown) {
+            // Check to make sure the sprite can actually move left
+            if (my.sprite.purpleTownie.x > (my.sprite.purpleTownie.displayWidth/2)) {
+                my.sprite.purpleTownie.x -= this.playerSpeed;
             }
+        }
+
+        // Moving right
+        if (this.right.isDown) {
+            // Check to make sure the sprite can actually move right
+            if (my.sprite.purpleTownie.x < (game.config.width - (my.sprite.purpleTownie.displayWidth/2))) {
+                my.sprite.purpleTownie.x += this.playerSpeed;
+            }
+        }
+
+        // Moving down
+        if (this.down.isDown) {
+            // Check to make sure the sprite can actually move right
+            if (my.sprite.purpleTownie.y < (game.config.height - (my.sprite.purpleTownie.displayHeight/2))) {
+                my.sprite.purpleTownie.y += this.playerSpeed;
+            }
+        }
+        
+        // Moving up
+        if (this.up.isDown) {
+            // Check to make sure the sprite can actually move left
+            if (my.sprite.purpleTownie.y > (my.sprite.purpleTownie.displayHeight/2)) {
+                my.sprite.purpleTownie.y -= this.playerSpeed;
+            }
+        }
+
+        // testing destroying character
+        // works for both purple townie and blue townie
+        if (this.collides(my.sprite.purpleTownie, my.sprite.blueTownie)) {
+            console.log("Destroyed");
+            my.sprite.blueTownie.destroy();
+        }*/
+
+        // allows you to restart the game 
+        if (Phaser.Input.Keyboard.JustDown(this.reset)) {
+            this.scene.restart();
         }
     }
 
@@ -101,7 +158,8 @@ class Pathfinder extends Phaser.Scene {
         return tileY * this.TILESIZE;
     }
 
-    // layersToGrid
+    // We need this for the game to run 
+    // if this function gets commneted out, the entire game doesn't pop up
     //
     // Uses the tile layer information in this.map and outputs
     // an array which contains the tile ids of the visible tiles on screen.
@@ -133,6 +191,8 @@ class Pathfinder extends Phaser.Scene {
         return grid;
     }
 
+    
+    // player movement with point and click of mouse
     handleClick(pointer) {
         let x = pointer.x / this.SCALE;
         let y = pointer.y / this.SCALE;
@@ -175,6 +235,18 @@ class Pathfinder extends Phaser.Scene {
 
     }
 
+    /*
+    resetCost(tileset) {
+        for (let tileID = tileset.firstgid; tileID < tileset.total; tileID++) {
+            let props = tileset.getTileProperties(tileID);
+            if (props != null) {
+                if (props.cost != null) {
+                    this.finder.setTileCost(tileID, 1);
+                }
+            }
+        }
+    }
+    
     // A function which takes as input a tileset and then iterates through all
     // of the tiles in the tileset to retrieve the cost property, and then 
     // uses the value of the cost property to inform EasyStar, using EasyStar's
@@ -187,6 +259,11 @@ class Pathfinder extends Phaser.Scene {
                 this.finder.setTileCost(tileID, props.cost);
             }
         }
+        */
 
+    collides(a, b) {
+        if (Math.abs(a.x - b.x) > (a.displayWidth/2 + b.displayWidth/2)) return false;
+        if (Math.abs(a.y - b.y) > (a.displayHeight/2 + b.displayHeight/2)) return false;
+        return true;
     }
 }
