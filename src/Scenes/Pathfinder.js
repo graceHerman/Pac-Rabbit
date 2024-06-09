@@ -28,7 +28,7 @@ class Pathfinder extends Phaser.Scene {
         
         /*// Create the layers
         this.groundLayer = this.map.createLayer("Ground-n-Walkways", this.tileset, 0, 0);
-        my.sprite.purpleTownie = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
+        my.sprite.playerRabbit = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
         this.treesLayer = this.map.createLayer("Trees-n-Bushes", this.tileset, 0, 0);
         this.housesLayer = this.map.createLayer("Houses-n-Fences", this.tileset, 0, 0);
 
@@ -36,17 +36,26 @@ class Pathfinder extends Phaser.Scene {
         this.treesLayer.setCollisionByProperty({ collides: true });
 
         // make it where the characters collide with the trees and houses
-        my.sprite.purpleTownie.setCollideWorldBounds(true);
+        my.sprite.playerRabbit.setCollideWorldBounds(true);
 
         // Enable collision handling
-        this.physics.add.collider(my.sprite.purpleTownie, this.housesLayer);
-        this.physics.add.collider(my.sprite.purpleTownie, this.treesLayer);*/
+        this.physics.add.collider(my.sprite.playerRabbit, this.housesLayer);
+        this.physics.add.collider(my.sprite.playerRabbit, this.treesLayer);*/
 
         // Create townsfolk sprite
         // Use setOrigin() to ensure the tile space computations work well
-        my.sprite.purpleTownie = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
-        my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
-
+        my.sprite.playerRabbit = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "rabbit").setOrigin(0,0); //changes the spawn location of the player.
+        //my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
+        //Creates a walking animation for the player.
+        this.anims.create({
+            key: "rabbitWalk",
+            frames: [
+                { key: "rabbitWalk" },
+                { key: "rabbitWalk2" }
+            ],
+            frameRate: 4,
+            repeat: -1
+        });
         //Figure out a way to have the game understand when two sprites are colliding.
         //This will help us increment score and add enemy damaging.
     
@@ -71,7 +80,7 @@ class Pathfinder extends Phaser.Scene {
         // Tell EasyStar which tiles can be walked on
         this.finder.setAcceptableTiles(walkables);
 
-        this.activeCharacter = my.sprite.purpleTownie;
+        this.activeCharacter = my.sprite.playerRabbit;
 
         // Handle mouse clicks
         // Handles the clicks on the map to make the character move
@@ -108,38 +117,38 @@ class Pathfinder extends Phaser.Scene {
         // Moving left
         if (this.left.isDown) {
             // Check to make sure the sprite can actually move left
-            if (my.sprite.purpleTownie.x > (my.sprite.purpleTownie.displayWidth/2)) {
-                my.sprite.purpleTownie.x -= this.playerSpeed;
+            if (my.sprite.playerRabbit.x > (my.sprite.playerRabbit.displayWidth/2)) {
+                my.sprite.playerRabbit.x -= this.playerSpeed;
             }
         }
 
         // Moving right
         if (this.right.isDown) {
             // Check to make sure the sprite can actually move right
-            if (my.sprite.purpleTownie.x < (game.config.width - (my.sprite.purpleTownie.displayWidth/2))) {
-                my.sprite.purpleTownie.x += this.playerSpeed;
+            if (my.sprite.playerRabbit.x < (game.config.width - (my.sprite.playerRabbit.displayWidth/2))) {
+                my.sprite.playerRabbit.x += this.playerSpeed;
             }
         }
 
         // Moving down
         if (this.down.isDown) {
             // Check to make sure the sprite can actually move right
-            if (my.sprite.purpleTownie.y < (game.config.height - (my.sprite.purpleTownie.displayHeight/2))) {
-                my.sprite.purpleTownie.y += this.playerSpeed;
+            if (my.sprite.playerRabbit.y < (game.config.height - (my.sprite.playerRabbit.displayHeight/2))) {
+                my.sprite.playerRabbit.y += this.playerSpeed;
             }
         }
         
         // Moving up
         if (this.up.isDown) {
             // Check to make sure the sprite can actually move left
-            if (my.sprite.purpleTownie.y > (my.sprite.purpleTownie.displayHeight/2)) {
-                my.sprite.purpleTownie.y -= this.playerSpeed;
+            if (my.sprite.playerRabbit.y > (my.sprite.playerRabbit.displayHeight/2)) {
+                my.sprite.playerRabbit.y -= this.playerSpeed;
             }
         }
 
         // testing destroying character
         // works for both purple townie and blue townie
-        if (this.collides(my.sprite.purpleTownie, my.sprite.blueTownie)) {
+        if (this.collides(my.sprite.playerRabbit, my.sprite.blueTownie)) {
             console.log("Destroyed");
             my.sprite.blueTownie.destroy();
         }*/
@@ -228,9 +237,15 @@ class Pathfinder extends Phaser.Scene {
             });
         }
     
+        character.anims.play("rabbitWalk", true);
+
         this.tweens.chain({
             targets: character,
-            tweens: tweens
+            tweens: tweens,
+            onComplete: () => {
+                character.anims.stop();
+                character.setTexture("rabbit");
+            }
         });
 
     }
