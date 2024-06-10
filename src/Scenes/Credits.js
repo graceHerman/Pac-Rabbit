@@ -35,13 +35,15 @@ class Credits extends Phaser.Scene {
         this.creditText = this.add.text(75, 275, 'Credits:', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
         this.credit1Text = this.add.text(75, 315, 'kenney_jumper-pack for player and enemies', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
         this.credit2Text = this.add.text(75, 355, 'kenny_particle-pack for particle effects', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit2Text = this.add.text(75, 395, 'kenny... for sound', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit4Text = this.add.text(75, 485, 'Myles: ', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit5Text = this.add.text(75, 525, 'Grace: ', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit6Text = this.add.text(75, 565, 'PlatformImprovement-master file by Jim Whitehead as reference for our code ', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.credit3Text = this.add.text(75, 395, 'kenny... for sound', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.credit4Text = this.add.text(75, 435, '.. for power ups', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.credit5Text = this.add.text(75, 475, 'Start screen image by Dgwildlife and Credit screen image by ...', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.credit6Text = this.add.text(75, 515, 'Coded, designed and created by Myles Anderson', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.credit7Text = this.add.text(75, 555, 'Coded and designed by Grace Herman', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.credit8Text = this.add.text(75, 595, 'PlatformImprovement-master file by Jim Whitehead as reference for our code ', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
 
-        this.backText = this.add.text(450, 650, 'title', { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff'}).setOrigin(0.5).setInteractive();
-        this.againText = this.add.text(750, 650, 'replay game', { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff'}).setOrigin(0.5).setInteractive();
+        this.backText = this.add.text(450, 680, 'title', { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff'}).setOrigin(0.5).setInteractive();
+        this.againText = this.add.text(750, 680, 'replay game', { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff'}).setOrigin(0.5).setInteractive();
 
         // Styles for normal and hover states
         const normalStyle = { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff' };
