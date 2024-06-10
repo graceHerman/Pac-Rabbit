@@ -74,6 +74,33 @@ class Pathfinder extends Phaser.Scene {
         ];
         this.gold_carrots = [my.sprite.gold, my.sprite.gold1, my.sprite.gold2, my.sprite.gold3, my.sprite.gold4];
 
+        my.sprite.enemy1 = this.physics.add.sprite(this.tileXtoWorld(10), this.tileYtoWorld(11), "enemyFly").setOrigin(0, 0);
+        my.sprite.enemy2 = this.physics.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(5), "enemyFly").setOrigin(0, 0);
+        my.sprite.enemy3 = this.physics.add.sprite(this.tileXtoWorld(23), this.tileYtoWorld(23), "enemyFly").setOrigin(0, 0);
+        my.sprite.enemy4 = this.physics.add.sprite(this.tileXtoWorld(30), this.tileYtoWorld(8), "enemyFly").setOrigin(0, 0);
+        my.sprite.enemy5 = this.physics.add.sprite(this.tileXtoWorld(35), this.tileYtoWorld(15), "enemyFly").setOrigin(0, 0);
+        my.sprite.enemy6 = this.physics.add.sprite(this.tileXtoWorld(35), this.tileYtoWorld(23), "enemyFly").setOrigin(0, 0);
+        my.sprite.enemy7 = this.physics.add.sprite(this.tileXtoWorld(3), this.tileYtoWorld(20), "enemyFly").setOrigin(0, 0);
+        //my.sprite.enemy8 = this.physics.add.sprite(this.tileXtoWorld(3), this.tileYtoWorld(20), "enemyFly").setOrigin(0, 0);
+        this.enemyPaths = [
+            [{x: 10, y: 11}, {x: 5, y: 11}, {x: 5, y: 15}, {x: 5, y: 11}], // Path for enemy1
+            [{x: 15, y: 5}, {x: 20, y: 5}, {x: 20, y: 7}, {x: 15, y: 7}], // Path for enemy2
+            [{x: 23, y: 23}, {x: 33, y: 23}], // Path for enemy3
+            [{x: 30, y: 8}, {x: 36, y: 8}, {x: 30, y: 8}, {x: 30, y: 10}, {x: 29, y: 10}, {x: 29, y: 8}], // Path for enemy4
+            [{x: 35, y: 15}, {x: 35, y: 13}, {x: 36, y: 13}, {x: 36, y: 17}, {x: 35, y: 17}], // Path for enemy5
+            [{x: 35, y: 23}, {x: 38, y: 23}, {x: 38, y: 19}, {x: 33, y: 19}, {x: 33, y: 21}, {x: 35, y: 21}], // Path for enemy6
+            [{x: 3, y: 20}, {x: 3, y: 23}, {x: 15, y: 23}, {x: 3, y: 23}] // Path for enemy7
+        ];
+        this.enemyData = [];
+        for (let i = 0; i < this.enemyPaths.length; i++) {
+            this.enemyData.push({
+                enemy: my.sprite[`enemy${i+1}`],
+                path: this.enemyPaths[i],
+                pathIndex: 0,
+                speed: 5
+            });
+        }
+        //this.moveEnemies();
         //my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
         //Creates a walking animation for the player.
         this.anims.create({
@@ -133,6 +160,7 @@ class Pathfinder extends Phaser.Scene {
     }
 
     update() {
+        this.moveEnemies(this.game.loop.delta);
         /*if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
             if (!this.lowCost) {
                 // Make the path low cost with respect to grassy areas
@@ -334,4 +362,48 @@ class Pathfinder extends Phaser.Scene {
         this.score += amount;
         this.scoreText.setText('Score: ' + this.score);
     }
+
+    moveEnemies(delta) {
+        for (let i = 0; i < this.enemyData.length; i++) {
+            let enemyData = this.enemyData[i];
+            let enemy = enemyData.enemy;
+            let path = enemyData.path;
+            let pathIndex = enemyData.pathIndex;
+            let speed = enemyData.speed;
+    
+            // Get the current and next path points
+            let currentPoint = path[pathIndex];
+            let nextPoint = path[(pathIndex + 1) % path.length];
+    
+            // Calculate the distance between the current and next points
+            let distanceX = nextPoint.x - currentPoint.x;
+            let distanceY = nextPoint.y - currentPoint.y;
+            let distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    
+            // Calculate the movement speed based on the distance and enemy speed
+            let moveSpeed = speed * delta / 1000;
+    
+            // Normalize the direction vector
+            let directionX = distanceX / distance;
+            let directionY = distanceY / distance;
+    
+            // Calculate the new position based on the movement speed and direction
+            let newX = enemy.x + directionX * moveSpeed * this.TILESIZE;
+            let newY = enemy.y + directionY * moveSpeed * this.TILESIZE;
+    
+            // Check if the enemy has reached or passed the next point
+            if (Math.abs(newX - nextPoint.x * this.TILESIZE) <= moveSpeed * this.TILESIZE &&
+                Math.abs(newY - nextPoint.y * this.TILESIZE) <= moveSpeed * this.TILESIZE) {
+                // If the enemy has reached the next point, snap to the exact position
+                enemy.x = nextPoint.x * this.TILESIZE;
+                enemy.y = nextPoint.y * this.TILESIZE;
+                enemyData.pathIndex = (pathIndex + 1) % path.length;
+            } else {
+                // If the enemy hasn't reached the next point, update its position
+                enemy.x = newX;
+                enemy.y = newY;
+            }
+        }
+    }
+    
 }

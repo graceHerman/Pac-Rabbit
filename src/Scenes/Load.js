@@ -14,6 +14,8 @@ class Load extends Phaser.Scene {
         this.load.image("rabbitWalk2", "bunny1_walk2.png");
         this.load.image("carrot", "carrot.png");
         this.load.image("gold", "carrot_gold.png");
+        this.load.image("enemyFly", "flyMan_still_fly.png");
+        this.load.image("enemyFly2", "flyMan_jump.png");
 
         // Load tilemap information
         this.load.image("tilemap_tiles", "tilemap_packed.png");                   // Packed tilemap
