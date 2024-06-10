@@ -35,7 +35,7 @@ let config = {
     },
     width: 1280,
     height: 800,
-    scene: [Start, Load, Pathfinder, Credits]
+    scene: [Start, Load, Pathfinder, Credits, Lost]
 }
 
 var cursors;
