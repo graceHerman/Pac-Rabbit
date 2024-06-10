@@ -165,7 +165,7 @@ class Pathfinder extends Phaser.Scene {
 
         // make a score text 
         this.scoreText = this.add.text(525, 5, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
-        this.healthText = this.add.text(525, 25, 'Health: ' + this.health, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#ffffff' });
+        this.healthText = this.add.text(400, 5, 'Health: ' + this.health, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#ffffff' });
 
     }
 
@@ -432,7 +432,8 @@ class Pathfinder extends Phaser.Scene {
             if (this.health <= 0) {
                 // Game over logic
                 console.log("Game Over");
-                this.scene.restart();
+                //this.scene.restart();
+                this.scene.start("lostScene", {score: this.score});
             }
         }
     }
