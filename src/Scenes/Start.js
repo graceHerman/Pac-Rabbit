@@ -14,10 +14,13 @@ class Start extends Phaser.Scene {
     preload() {
         this.load.setPath("./assets/");
 
+        this.load.image("brownrabbit", "brown rabbit.png");
     }
 
     create() {
         let my = this.my;
+
+        this.add.image(420, 400, "brownrabbit").setScale(3.0);
 
         // Notice that in this approach, we don't create any bullet sprites in create(),
         // and instead wait until we need them, based on the number of space bar presses
@@ -25,11 +28,11 @@ class Start extends Phaser.Scene {
         // Create key objects (for testing purposes)
         this.enterKey = this.input.keyboard.addKey("P");
 
-        this.titleText = this.add.text(200, 250, 'Pac-Rabbit', { fontFamily: 'Comic Sans MS', fontSize: 80, color: '#ffffff' });
-        this.titleText = this.add.text(300, 350, 'Try to collect everything!', { fontFamily: 'Comic Sans MS', fontSize: 65, color: '#ffffff' });
+        this.titleText = this.add.text(600, 200, 'Pac-Rabbit', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#ffffff' });
+        this.titleText = this.add.text(650, 350, 'Try to collect \n' +  'all of the carrots!', { fontFamily: 'Comic Sans MS', fontSize: 65, color: '#ffffff' });
 
         // Create score bar
-        this.playText = this.add.text(300, 500, 'Play!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
+        this.playText = this.add.text(850, 600, 'Play!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
 
         // font styles for hovering and normal
         const normalStyle = { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff' };
