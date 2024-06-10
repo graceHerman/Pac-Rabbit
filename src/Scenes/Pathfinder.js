@@ -1,9 +1,12 @@
 class Pathfinder extends Phaser.Scene {
     constructor() {
         super("pathfinderScene");
+
+        this.score = 0;
     }
 
     preload() {
+
     }
 
     init() {
@@ -45,6 +48,32 @@ class Pathfinder extends Phaser.Scene {
         // Create townsfolk sprite
         // Use setOrigin() to ensure the tile space computations work well
         my.sprite.playerRabbit = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "rabbit").setOrigin(0,0); //changes the spawn location of the player.
+
+        // regular carrots
+        my.sprite.carrot = this.physics.add.sprite(this.tileXtoWorld(7), this.tileYtoWorld(21), "carrot").setOrigin(0,0);
+        my.sprite.carrot1 = this.physics.add.sprite(this.tileXtoWorld(7), this.tileYtoWorld(13), "carrot").setOrigin(0,0);
+        my.sprite.carrot2 = this.physics.add.sprite(this.tileXtoWorld(25), this.tileYtoWorld(19), "carrot").setOrigin(0,0);
+        my.sprite.carrot3 = this.physics.add.sprite(this.tileXtoWorld(27), this.tileYtoWorld(19), "carrot").setOrigin(0,0);
+        my.sprite.carrot4 = this.physics.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(9), "carrot").setOrigin(0,0);
+        my.sprite.carrot5 = this.physics.add.sprite(this.tileXtoWorld(21), this.tileYtoWorld(11), "carrot").setOrigin(0,0);
+        my.sprite.carrot6 = this.physics.add.sprite(this.tileXtoWorld(35), this.tileYtoWorld(17), "carrot").setOrigin(0,0);
+        my.sprite.carrot7 = this.physics.add.sprite(this.tileXtoWorld(36), this.tileYtoWorld(17), "carrot").setOrigin(0,0);
+        my.sprite.carrot8 = this.physics.add.sprite(this.tileXtoWorld(35), this.tileYtoWorld(4), "carrot").setOrigin(0,0);
+        my.sprite.carrot9 = this.physics.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(16), "carrot").setOrigin(0,0);
+        my.sprite.carrot10 = this.physics.add.sprite(this.tileXtoWorld(20), this.tileYtoWorld(2), "carrot").setOrigin(0,0);
+
+        // gold carrots
+        my.sprite.gold = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(21), "gold").setOrigin(0,0);
+        my.sprite.gold1 = this.physics.add.sprite(this.tileXtoWorld(26), this.tileYtoWorld(19), "gold").setOrigin(0,0);
+        my.sprite.gold2 = this.physics.add.sprite(this.tileXtoWorld(17), this.tileYtoWorld(23), "gold").setOrigin(0,0);
+        my.sprite.gold3 = this.physics.add.sprite(this.tileXtoWorld(35), this.tileYtoWorld(3), "gold").setOrigin(0,0);
+        my.sprite.gold4 = this.physics.add.sprite(this.tileXtoWorld(20), this.tileYtoWorld(7), "gold").setOrigin(0,0);
+
+        this.carrots = [my.sprite.carrot, my.sprite.carrot1, my.sprite.carrot2, my.sprite.carrot3, my.sprite.carrot4, my.sprite.carrot5,
+            my.sprite.carrot6, my.sprite.carrot7, my.sprite.carrot8, my.sprite.carrot9, my.sprite.carrot10
+        ];
+        this.gold_carrots = [my.sprite.gold, my.sprite.gold1, my.sprite.gold2, my.sprite.gold3, my.sprite.gold4];
+
         //my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
         //Creates a walking animation for the player.
         this.anims.create({
@@ -91,12 +120,15 @@ class Pathfinder extends Phaser.Scene {
         this.cKey = this.input.keyboard.addKey('C');
         this.lowCost = false;
 
-        // add key inputs for character movement AWSD
+        /*// add key inputs for character movement AWSD
         this.left = this.input.keyboard.addKey("A");
         this.right = this.input.keyboard.addKey("D");
         this.up = this.input.keyboard.addKey("W");
-        this.down = this.input.keyboard.addKey("S");
+        this.down = this.input.keyboard.addKey("S");*/
         this.reset = this.input.keyboard.addKey("R");
+
+        // make a score text 
+        this.scoreText = this.add.text(525, 5, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
 
     }
 
@@ -144,14 +176,29 @@ class Pathfinder extends Phaser.Scene {
             if (my.sprite.playerRabbit.y > (my.sprite.playerRabbit.displayHeight/2)) {
                 my.sprite.playerRabbit.y -= this.playerSpeed;
             }
-        }
-
-        // testing destroying character
-        // works for both purple townie and blue townie
-        if (this.collides(my.sprite.playerRabbit, my.sprite.blueTownie)) {
-            console.log("Destroyed");
-            my.sprite.blueTownie.destroy();
         }*/
+
+        // destroy carrots and gold carrots when player collides with them
+        // increase the score once there's a collision
+        this.carrots = this.carrots.filter(c => {
+            if (this.collides(my.sprite.playerRabbit, c)) {
+                console.log("Destroyed carrot");
+                this.increaseScore(1);
+                c.destroy();
+                return false; // Remove carrot from array
+            }
+            return true; // Keep carrot in array
+        });
+
+        this.gold_carrots = this.gold_carrots.filter(g => {
+            if (this.collides(my.sprite.playerRabbit, g)) {
+                console.log("Destroyed gold");
+                this.increaseScore(2);
+                g.destroy();
+                return false; // Remove gold carrot from array
+            }
+            return true; // Keep gold carrot in array
+        });
 
         // allows you to restart the game 
         if (Phaser.Input.Keyboard.JustDown(this.reset)) {
@@ -276,9 +323,15 @@ class Pathfinder extends Phaser.Scene {
         }
         */
 
+    // colliding with object
     collides(a, b) {
         if (Math.abs(a.x - b.x) > (a.displayWidth/2 + b.displayWidth/2)) return false;
         if (Math.abs(a.y - b.y) > (a.displayHeight/2 + b.displayHeight/2)) return false;
         return true;
+    }
+
+    increaseScore(amount) {
+        this.score += amount;
+        this.scoreText.setText('Score: ' + this.score);
     }
 }
