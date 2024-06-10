@@ -3,6 +3,9 @@ class Pathfinder extends Phaser.Scene {
         super("pathfinderScene");
 
         this.score = 0;
+        this.health = 10;
+        this.invince = false;
+        this.invinceDura = 1000;
     }
 
     preload() {
@@ -97,8 +100,14 @@ class Pathfinder extends Phaser.Scene {
                 enemy: my.sprite[`enemy${i+1}`],
                 path: this.enemyPaths[i],
                 pathIndex: 0,
-                speed: 5
+                speed: 5,
+                health: 1
             });
+        }
+
+        for (let i = 0; i < this.enemyData.length; i++) {
+            let enemy = this.enemyData[i].enemy;
+            this.physics.add.overlap(my.sprite.playerRabbit, enemy, this.handleEnemyCollision, null, this);
         }
         //this.moveEnemies();
         //my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
@@ -156,6 +165,7 @@ class Pathfinder extends Phaser.Scene {
 
         // make a score text 
         this.scoreText = this.add.text(525, 5, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
+        this.healthText = this.add.text(525, 25, 'Health: ' + this.health, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#ffffff' });
 
     }
 
@@ -402,6 +412,27 @@ class Pathfinder extends Phaser.Scene {
                 // If the enemy hasn't reached the next point, update its position
                 enemy.x = newX;
                 enemy.y = newY;
+            }
+        }
+    }
+    
+    handleEnemyCollision(player, enemy) {
+        if (!this.invince) {
+            // Reduce player health by 1
+            this.health--;
+            this.healthText.setText('Health: ' + this.health);
+    
+            // Set invincibility flag and start cooldown timer
+            this.invince = true;
+            this.time.delayedCall(this.invinceDura, () => {
+                this.invince = false;
+            });
+    
+            // Check if player health reaches 0
+            if (this.health <= 0) {
+                // Game over logic
+                console.log("Game Over");
+                this.scene.restart();
             }
         }
     }
