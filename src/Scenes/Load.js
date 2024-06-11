@@ -21,6 +21,9 @@ class Load extends Phaser.Scene {
         // Load tilemap information
         this.load.image("tilemap_tiles", "tilemap_packed.png");                   // Packed tilemap
         this.load.tilemapTiledJSON("three-farmhouses", "three-farmhouses.tmj");   // Tilemap in JSON
+
+        // play sound
+        this.load.audio("walkSound", "footstep_grass_003.ogg");
     }
 
     create() {
