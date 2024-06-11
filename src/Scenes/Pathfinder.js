@@ -1,4 +1,4 @@
-class Pathfinder extends Phaser.Scene {
+cclass Pathfinder extends Phaser.Scene {
     constructor() {
         super("pathfinderScene");
 
@@ -18,6 +18,8 @@ class Pathfinder extends Phaser.Scene {
         this.TILEWIDTH = 40;
         this.TILEHEIGHT = 25;
         this.playerSpeed = 2;
+
+        this.PARTICLE_VELOCITY = 50;
     }
 
     create() {
@@ -153,8 +155,8 @@ class Pathfinder extends Phaser.Scene {
         // function this.handleClick()
         this.input.on('pointerup',this.handleClick, this);
 
-        this.cKey = this.input.keyboard.addKey('C');
-        this.lowCost = false;
+        //this.cKey = this.input.keyboard.addKey('C');
+        //this.lowCost = false;
 
         /*// add key inputs for character movement AWSD
         this.left = this.input.keyboard.addKey("A");
@@ -165,12 +167,35 @@ class Pathfinder extends Phaser.Scene {
 
         // make a score text 
         this.scoreText = this.add.text(525, 5, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
-        this.healthText = this.add.text(400, 5, 'Health: ' + this.health, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#ffffff' });
+        this.healthText = this.add.text(400, 5, 'Health: ' + this.health, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
+
+        // Walking sound
+        this.walkSound = this.sound.add('walkSound', { volume: 0.25 });
+
+        this.isRabbitMoving = false;
+
+        // make smoke particle
+        // I deleted the code I had beacuse it would make the game disappear
 
     }
 
     update() {
         this.moveEnemies(this.game.loop.delta);
+
+        // Play walking sound if rabbit is moving and stop it if not
+        if (this.isRabbitMoving) {
+            if (!this.walkSound.isPlaying) {
+                this.walkSound.play();
+                console.log("Sound playing");
+            }
+        } 
+        else {
+            if (this.walkSound.isPlaying) {
+                this.walkSound.stop();
+                console.log("Sound is not moving");
+            }
+        }
+
         /*if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
             if (!this.lowCost) {
                 // Make the path low cost with respect to grassy areas
@@ -319,10 +344,13 @@ class Pathfinder extends Phaser.Scene {
                 x: ex*this.map.tileWidth,
                 y: ey*this.map.tileHeight,
                 duration: 200
+
             });
         }
     
         character.anims.play("rabbitWalk", true);
+
+        this.isRabbitMoving = true;
 
         this.tweens.chain({
             targets: character,
@@ -330,6 +358,9 @@ class Pathfinder extends Phaser.Scene {
             onComplete: () => {
                 character.anims.stop();
                 character.setTexture("rabbit");
+
+                // Stop the walking sound when the animation stops
+                this.isRabbitMoving = false;;
             }
         });
 
