@@ -1,4 +1,4 @@
-cclass Pathfinder extends Phaser.Scene {
+class Pathfinder extends Phaser.Scene {
     constructor() {
         super("pathfinderScene");
 
