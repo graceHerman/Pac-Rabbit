@@ -133,10 +133,13 @@ class Pathfinder extends Phaser.Scene {
         this.walkingParticles = this.add.particles(0,0, 'walking',{
             speed: { min: -50, max: 50 },
             angle: { min: 0, max: 360 },
-            scale: { start: 0.5, end: 0 },
+            scale: { start: 0.02, end: 0 },
             alpha: { start: 1, end: 0 },
             lifespan: 500,
             blendMode: 'ADD',
+            follow: my.sprite.playerRabbit,
+            offsetX: 8,
+            offsetY: 8,
             on: false // Start the emitter in an inactive state
         });
         this.walkingParticles.stop();
@@ -207,6 +210,7 @@ class Pathfinder extends Phaser.Scene {
                 this.walkSound.play();
                 console.log("Sound playing");
             }
+            this.walkingParticles.setPosition(my.sprite.playerRabbit.x+20, my.sprite.playerRabbit.y+8);
         } 
         else {
             if (this.walkSound.isPlaying) {
