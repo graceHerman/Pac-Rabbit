@@ -102,7 +102,7 @@ class Pathfinder extends Phaser.Scene {
                 enemy: my.sprite[`enemy${i+1}`],
                 path: this.enemyPaths[i],
                 pathIndex: 0,
-                speed: 5,
+                speed: 3,
                 health: 1
             });
         }
@@ -111,8 +111,11 @@ class Pathfinder extends Phaser.Scene {
             let enemy = this.enemyData[i].enemy;
             this.physics.add.overlap(my.sprite.playerRabbit, enemy, this.handleEnemyCollision, null, this);
         }
-        //this.moveEnemies();
-        //my.sprite.blueTownie = this.add.sprite(this.tileXtoWorld(15), this.tileYtoWorld(15), "blue").setOrigin(0,0);
+
+        this.sword = this.add.sprite(0, 0, 'sword');
+        this.sword.setOrigin(0.5, 1);
+        this.sword.visible = false;
+
         //Creates a walking animation for the player.
         this.anims.create({
             key: "rabbitWalk",
@@ -125,7 +128,19 @@ class Pathfinder extends Phaser.Scene {
         });
         //Figure out a way to have the game understand when two sprites are colliding.
         //This will help us increment score and add enemy damaging.
-    
+
+        //trying to figure out why this doesnt work.
+        this.walkingParticles = this.add.particles(0,0, 'walking',{
+            speed: { min: -50, max: 50 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 0.5, end: 0 },
+            alpha: { start: 1, end: 0 },
+            lifespan: 500,
+            blendMode: 'ADD',
+            on: false // Start the emitter in an inactive state
+        });
+        this.walkingParticles.stop();
+        
 
         // Camera settings
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -164,6 +179,10 @@ class Pathfinder extends Phaser.Scene {
         this.up = this.input.keyboard.addKey("W");
         this.down = this.input.keyboard.addKey("S");*/
         this.reset = this.input.keyboard.addKey("R");
+        this.zKey = this.input.keyboard.addKey("Z");
+        this.xKey = this.input.keyboard.addKey("X");
+        this.cKey = this.input.keyboard.addKey("C");
+        this.vKey = this.input.keyboard.addKey("V");
 
         // make a score text 
         this.scoreText = this.add.text(525, 5, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
@@ -195,6 +214,9 @@ class Pathfinder extends Phaser.Scene {
                 console.log("Sound is not moving");
             }
         }
+        //this.walkingEmitter.setPosition(my.sprite.playerRabbit.x, my.sprite.playerRabbit.y + 16);
+
+        
 
         /*if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
             if (!this.lowCost) {
@@ -266,6 +288,16 @@ class Pathfinder extends Phaser.Scene {
         // allows you to restart the game 
         if (Phaser.Input.Keyboard.JustDown(this.reset)) {
             this.scene.restart();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.zKey)) {
+            this.swingSword('left');
+        } else if (Phaser.Input.Keyboard.JustDown(this.xKey)) {
+            this.swingSword('up');
+        } else if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
+            this.swingSword('down');
+        } else if (Phaser.Input.Keyboard.JustDown(this.vKey)) {
+            this.swingSword('right');
         }
     }
 
@@ -352,6 +384,10 @@ class Pathfinder extends Phaser.Scene {
 
         this.isRabbitMoving = true;
 
+        //this.walkingEmitter.setPosition(character.x, character.y + 16);
+
+        this.walkingParticles.start();
+
         this.tweens.chain({
             targets: character,
             tweens: tweens,
@@ -360,7 +396,8 @@ class Pathfinder extends Phaser.Scene {
                 character.setTexture("rabbit");
 
                 // Stop the walking sound when the animation stops
-                this.isRabbitMoving = false;;
+                this.isRabbitMoving = false;
+                this.walkingParticles.stop();
             }
         });
 
@@ -467,6 +504,78 @@ class Pathfinder extends Phaser.Scene {
                 this.scene.start("lostScene", {score: this.score});
             }
         }
+    }
+
+    swingSword(direction) {
+        // Set the sword position to the player's position
+        this.sword.x = my.sprite.playerRabbit.x;
+        this.sword.y = my.sprite.playerRabbit.y;
+    
+        // Show the sword
+        this.sword.visible = true;
+    
+        // Set the sword rotation based on the direction
+        let angle = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+        switch (direction) {
+            case 'left':
+                angle = -90;
+                offsetX = 0;
+                offsetY = 8;
+                break;
+            case 'up':
+                angle = 0;
+                offsetY = 0;
+                offsetX = 8;
+                break;
+            case 'down':
+                angle = 179;
+                offsetY = 20;
+                offsetX = 8;
+                break;
+            case 'right':
+                angle = 90;
+                offsetX = 16;
+                offsetY = 8;
+                break;
+        }
+
+        this.sword.angle = angle;
+        this.sword.x += offsetX;
+        this.sword.y += offsetY;
+
+        this.physics.world.enable(this.sword);
+
+        for (let i = 0; i < this.enemyData.length; i++) {
+            let enemy = this.enemyData[i].enemy;
+            this.physics.add.overlap(this.sword, enemy, this.handleSwordEnemyCollision, null, this);
+        }
+    
+        // Create the swinging animation using a tween
+        this.tweens.add({
+            targets: this.sword,
+            angle: angle + 45,
+            duration: 100,
+            ease: 'Linear',
+            yoyo: true,
+            repeat: 0,
+            onComplete: () => {
+                // Hide the sword when the animation is complete
+                this.sword.visible = false;
+
+                this.physics.world.disable(this.sword);
+            }
+        });
+    }
+
+    handleSwordEnemyCollision(sword, enemy) {
+        // Destroy the enemy sprite
+        enemy.destroy();
+        this.increaseScore(5);
+    
+        // Remove the enemy from the enemyData array
+        this.enemyData = this.enemyData.filter(data => data.enemy !== enemy);
     }
     
 }
