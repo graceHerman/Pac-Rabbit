@@ -8,6 +8,7 @@ class Lost extends Phaser.Scene {
         this.my = {sprite: {}};
 
         this.score = 0;
+        this.health = 10;
         
     }
 
@@ -69,7 +70,7 @@ class Lost extends Phaser.Scene {
 
         // for testing purposes
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-            this.scene.start("loadScene", { previousScene: 'lostScene' });
+            this.scene.start("loadScene", { score: 0 });
         }
 
     }
@@ -81,7 +82,7 @@ class Lost extends Phaser.Scene {
 
         // Optionally, add a brief delay before transitioning to the new scene
         this.time.delayedCall(100, () => {
-            this.scene.start("loadScene", { health: 10 }, { score: 0 });
+            this.scene.start("loadScene", { health: 10, score: 0, maxScore: this.maxScore});
         });
     }
 }
