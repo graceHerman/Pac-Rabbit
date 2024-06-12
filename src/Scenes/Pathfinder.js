@@ -510,6 +510,6 @@ class Pathfinder extends Phaser.Scene {
     handleFinishFlagCollision(player, finishFlag) {
     // Start the "credits" scene with the player's score
     this.scene.start("credits", { score: this.score });
-}
+    }
     
 }
