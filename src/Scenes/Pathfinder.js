@@ -11,6 +11,9 @@ class Pathfinder extends Phaser.Scene {
     resetGame() {
         this.score = 0;
         this.health = 10;
+        this.scoretext.setText('Score: ' + this.score)
+        this.healthText.setText('Health: ' + this.health);
+
         this.scene.restart();
     }
 
@@ -42,24 +45,8 @@ class Pathfinder extends Phaser.Scene {
         this.groundLayer = this.map.createLayer("Ground-n-Walkways", this.tileset, 0, 0);
         this.treesLayer = this.map.createLayer("Trees-n-Bushes", this.tileset, 0, 0);
         this.housesLayer = this.map.createLayer("Houses-n-Fences", this.tileset, 0, 0);
-        
-        /*// Create the layers
-        this.groundLayer = this.map.createLayer("Ground-n-Walkways", this.tileset, 0, 0);
-        my.sprite.playerRabbit = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0); //changes the spawn location of the player.
-        this.treesLayer = this.map.createLayer("Trees-n-Bushes", this.tileset, 0, 0);
-        this.housesLayer = this.map.createLayer("Houses-n-Fences", this.tileset, 0, 0);
 
-        this.housesLayer.setCollisionByProperty({ collides: true });
-        this.treesLayer.setCollisionByProperty({ collides: true });
-
-        // make it where the characters collide with the trees and houses
-        my.sprite.playerRabbit.setCollideWorldBounds(true);
-
-        // Enable collision handling
-        this.physics.add.collider(my.sprite.playerRabbit, this.housesLayer);
-        this.physics.add.collider(my.sprite.playerRabbit, this.treesLayer);*/
-
-        // Create townsfolk sprite
+        // Create bunny sprite
         // Use setOrigin() to ensure the tile space computations work well
         my.sprite.playerRabbit = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "rabbit").setOrigin(0,0); //changes the spawn location of the player.
         my.sprite.playerRabbit.depth = 1;
@@ -187,14 +174,7 @@ class Pathfinder extends Phaser.Scene {
         // function this.handleClick()
         this.input.on('pointerup',this.handleClick, this);
 
-        //this.cKey = this.input.keyboard.addKey('C');
-        //this.lowCost = false;
-
-        /*// add key inputs for character movement AWSD
-        this.left = this.input.keyboard.addKey("A");
-        this.right = this.input.keyboard.addKey("D");
-        this.up = this.input.keyboard.addKey("W");
-        this.down = this.input.keyboard.addKey("S");*/
+        // add key inputs for character movement AWSD
         this.reset = this.input.keyboard.addKey("R");
         this.zKey = this.input.keyboard.addKey("Z");
         this.xKey = this.input.keyboard.addKey("X");
@@ -212,8 +192,10 @@ class Pathfinder extends Phaser.Scene {
 
         this.isRabbitMoving = false;
 
-        // make smoke particle
-        // I deleted the code I had beacuse it would make the game disappear
+        this.input.keyboard.on('keydown-D', () => {
+            this.physics.world.drawDebug = this.physics.world.drawDebug ? false : true
+            this.physics.world.debugGraphic.clear()
+        }, this);
 
     }
 
@@ -226,7 +208,6 @@ class Pathfinder extends Phaser.Scene {
                 this.walkSound.play();
                 console.log("Sound playing");
             }
-            //this.walkingParticles.setPosition(my.sprite.playerRabbit.x + my.sprite.playerRabbit.width / 2, my.sprite.playerRabbit.y + my.sprite.playerRabbit.height / 2);
         } 
         else {
             if (this.walkSound.isPlaying) {
@@ -234,54 +215,6 @@ class Pathfinder extends Phaser.Scene {
                 console.log("Sound is not moving");
             }
         }
-        //this.walkingEmitter.setPosition(my.sprite.playerRabbit.x, my.sprite.playerRabbit.y + 16);
-
-        
-
-        /*if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
-            if (!this.lowCost) {
-                // Make the path low cost with respect to grassy areas
-                this.setCost(this.tileset);
-                this.lowCost = true;
-            } else {
-                // Restore everything to same cost
-                this.resetCost(this.tileset);
-                this.lowCost = false;
-            }
-        }*/
-
-        /*// make the character move
-        // Moving left
-        if (this.left.isDown) {
-            // Check to make sure the sprite can actually move left
-            if (my.sprite.playerRabbit.x > (my.sprite.playerRabbit.displayWidth/2)) {
-                my.sprite.playerRabbit.x -= this.playerSpeed;
-            }
-        }
-
-        // Moving right
-        if (this.right.isDown) {
-            // Check to make sure the sprite can actually move right
-            if (my.sprite.playerRabbit.x < (game.config.width - (my.sprite.playerRabbit.displayWidth/2))) {
-                my.sprite.playerRabbit.x += this.playerSpeed;
-            }
-        }
-
-        // Moving down
-        if (this.down.isDown) {
-            // Check to make sure the sprite can actually move right
-            if (my.sprite.playerRabbit.y < (game.config.height - (my.sprite.playerRabbit.displayHeight/2))) {
-                my.sprite.playerRabbit.y += this.playerSpeed;
-            }
-        }
-        
-        // Moving up
-        if (this.up.isDown) {
-            // Check to make sure the sprite can actually move left
-            if (my.sprite.playerRabbit.y > (my.sprite.playerRabbit.displayHeight/2)) {
-                my.sprite.playerRabbit.y -= this.playerSpeed;
-            }
-        }*/
 
         // destroy carrots and gold carrots when player collides with them
         // increase the score once there's a collision
@@ -310,6 +243,7 @@ class Pathfinder extends Phaser.Scene {
             this.resetGame();
         }
 
+        // sword controls
         if (Phaser.Input.Keyboard.JustDown(this.zKey)) {
             this.swingSword('left');
         } else if (Phaser.Input.Keyboard.JustDown(this.xKey)) {
@@ -343,7 +277,6 @@ class Pathfinder extends Phaser.Scene {
     layersToGrid() {
         let grid = [];
         // Initialize grid as two-dimensional array
-        // TODO: write initialization code
         for (let y = 0; y<this.map.height; y++){
             let row = [];
             for (let x = 0; x < this.map.width;x++){
@@ -352,7 +285,6 @@ class Pathfinder extends Phaser.Scene {
             grid.push(row)
         }
         // Loop over layers to find tile IDs, store in grid
-        // TODO: write this loop
         for (let layer of this.map.layers){
             for (let y = 0; y < this.map.height; y++){
                 for (let x = 0; x < this.map.width; x++){
@@ -409,8 +341,6 @@ class Pathfinder extends Phaser.Scene {
 
         this.isRabbitMoving = true;
 
-        //this.walkingEmitter.setPosition(character.x, character.y + 16);
-
         this.walkingParticles.start();
 
         this.tweens.chain({
@@ -427,32 +357,6 @@ class Pathfinder extends Phaser.Scene {
         });
 
     }
-
-    /*
-    resetCost(tileset) {
-        for (let tileID = tileset.firstgid; tileID < tileset.total; tileID++) {
-            let props = tileset.getTileProperties(tileID);
-            if (props != null) {
-                if (props.cost != null) {
-                    this.finder.setTileCost(tileID, 1);
-                }
-            }
-        }
-    }
-    
-    // A function which takes as input a tileset and then iterates through all
-    // of the tiles in the tileset to retrieve the cost property, and then 
-    // uses the value of the cost property to inform EasyStar, using EasyStar's
-    // setTileCost(tileID, tileCost) function.
-    setCost(tileset) {
-        // TODO: write this function
-        for (let tileID = tileset.firstgid; tileID < tileset.firstgid + tileset.total; tileID++){
-            let props = tileset.getTileProperties(tileID);
-            if (props && props.cost){
-                this.finder.setTileCost(tileID, props.cost);
-            }
-        }
-        */
 
     // colliding with object
     collides(a, b) {
