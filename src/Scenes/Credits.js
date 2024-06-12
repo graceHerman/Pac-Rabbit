@@ -10,6 +10,7 @@ class Credits extends Phaser.Scene {
     }
 
     init(data) {
+        this.maxScore = data.maxScore || 0;
         this.score = data.score || 0; // Retrieve the score from data, defaulting to 0 if not provided
     }
 
@@ -32,9 +33,13 @@ class Credits extends Phaser.Scene {
         // display the background image
         this.add.image(500, 300, "background").setScale(1.40);
 
+        if (this.maxScore < this.score) {
+            this.maxScore = this.score;
+        }
+
         // credits
         this.endText = this.add.text(250, 75, 'YOU DID IT! :D', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#0ffffff'});
-        this.scoreText = this.add.text(395, 200, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#0ffffff'});
+        this.scoreText = this.add.text(395, 200, 'Max Score: ' + this.maxScore + '      ' + 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#0ffffff'});
 
         this.creditText = this.add.text(75, 275, 'Credits:', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
         this.credit1Text = this.add.text(75, 315, 'kenney_jumper-pack for player and enemies', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
@@ -81,8 +86,7 @@ class Credits extends Phaser.Scene {
         });
 
         this.againText.on('pointerdown', () => {
-            this.scene.start("loadScene", {score: 0});
-            //this.scene.get('SceneA').restart();
+            this.scene.start("loadScene", {health: 10}, {score: 0}, {maxScore: this.maxScore});
         });
 
     }
@@ -95,7 +99,7 @@ class Credits extends Phaser.Scene {
             this.scene.start("start");
         }
         if (Phaser.Input.Keyboard.JustDown(this.restartScene)) {
-            //this.scene.restart("loadScene", {health: 10}, {score: 0});
+            this.scene.restart("loadScene");
         }
 
     }
