@@ -1,6 +1,9 @@
 class Load extends Phaser.Scene {
     constructor() {
         super("loadScene");
+
+        this.health = 10; 
+        this.score = 0;
     }
 
     preload() {
@@ -32,7 +35,7 @@ class Load extends Phaser.Scene {
         
 
          // ...and pass to the next Scene
-         this.scene.start("pathfinderScene");
+         this.scene.start("pathfinderScene", {health: 10, score: 0});
     }
 
     // Never get here since a new scene is started in create()
