@@ -9,6 +9,10 @@ class Credits extends Phaser.Scene {
         
     }
 
+    init(data) {
+        this.score = data.score || 0; // Retrieve the score from data, defaulting to 0 if not provided
+    }
+
     preload() {
         this.load.setPath("./assets/");
 
@@ -29,18 +33,18 @@ class Credits extends Phaser.Scene {
         this.add.image(500, 300, "background").setScale(1.40);
 
         // credits
-        this.endText = this.add.text(250, 75, 'YOU DID IT! :D', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#A52A2A'});
-        this.scoreText = this.add.text(395, 200, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'});
+        this.endText = this.add.text(250, 75, 'YOU DID IT! :D', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#0ffffff'});
+        this.scoreText = this.add.text(395, 200, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#0ffffff'});
 
-        this.creditText = this.add.text(75, 275, 'Credits:', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit1Text = this.add.text(75, 315, 'kenney_jumper-pack for player and enemies', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit2Text = this.add.text(75, 355, 'kenny_particle-pack for particle effects', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit3Text = this.add.text(75, 395, 'kenny... for sound', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit4Text = this.add.text(75, 435, '.. for power ups', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit5Text = this.add.text(75, 475, 'Start screen image by Dgwildlife and Credit screen image by ...', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit6Text = this.add.text(75, 515, 'Coded, designed and created by Myles Andersson', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit7Text = this.add.text(75, 555, 'Coded and designed by Grace Herman', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
-        this.credit8Text = this.add.text(75, 595, 'PlatformImprovement-master file by Jim Whitehead as reference for our code ', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#ffffff' });
+        this.creditText = this.add.text(75, 275, 'Credits:', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit1Text = this.add.text(75, 315, 'kenney_jumper-pack for player and enemies', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit2Text = this.add.text(75, 355, 'kenny_particle-pack for particle effects', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit3Text = this.add.text(75, 395, 'kenny_impact-sound for sound', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit4Text = this.add.text(75, 435, 'kenny_tiny-dungeon for sword and kenny_pixel-platformer for flag', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit5Text = this.add.text(75, 475, 'Start screen image by Dgwildlife and Credit screen image by ...', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit6Text = this.add.text(75, 515, 'Coded, designed and created by Myles Andersson', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit7Text = this.add.text(75, 555, 'Coded and designed by Grace Herman', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
+        this.credit8Text = this.add.text(75, 595, 'PlatformImprovement-master file by Jim Whitehead as reference for our code ', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
 
         this.backText = this.add.text(450, 680, 'title', { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff'}).setOrigin(0.5).setInteractive();
         this.againText = this.add.text(750, 680, 'replay game', { fontFamily: 'Comic Sans MS', fontSize: 35, color: '#0ffffff'}).setOrigin(0.5).setInteractive();
@@ -77,11 +81,9 @@ class Credits extends Phaser.Scene {
         });
 
         this.againText.on('pointerdown', () => {
-            this.scene.start("loadScene");
+            this.scene.start("loadScene", {score: 0});
+            //this.scene.get('SceneA').restart();
         });
-
-        // update HTML description
-        document.getElementById('description').innerHTML = '<h2>Credits.js</h2><br>'
 
     }
 
@@ -92,7 +94,7 @@ class Credits extends Phaser.Scene {
             this.scene.start("start");
         }
         if (Phaser.Input.Keyboard.JustDown(this.restartScene)) {
-            this.scene.start("loadScene", {score: 0});
+            //this.scene.restart("loadScene", {health: 10}, {score: 0});
         }
 
     }
