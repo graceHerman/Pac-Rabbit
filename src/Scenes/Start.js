@@ -8,6 +8,7 @@ class Start extends Phaser.Scene {
         this.my = {sprite: {}};
 
         this.score = 0;
+        this.health = 10;
         
     }
 
@@ -28,15 +29,19 @@ class Start extends Phaser.Scene {
         // Create key objects (for testing purposes)
         this.enterKey = this.input.keyboard.addKey("P");
 
-        this.titleText = this.add.text(600, 200, 'Pac-Rabbit', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#ffffff' });
-        this.titleText = this.add.text(650, 350, 'Try to collect \n' +  'all of the carrots!', { fontFamily: 'Comic Sans MS', fontSize: 65, color: '#ffffff' });
+        this.titleText = this.add.text(600, 125, 'Pac-Rabbit', { fontFamily: 'Comic Sans MS', fontSize: 110, color: '#ffffff' });
+        this.title1Text = this.add.text(625, 250, 'Try to collect \n' +  'all of the carrots!', { fontFamily: 'Comic Sans MS', fontSize: 60, color: '#ffffff' });
 
         // Create score bar
-        this.playText = this.add.text(850, 600, 'Play!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
+        this.playText = this.add.text(850, 675, 'Play!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
+
+        this.controlsText = this.add.text(600, 450, 'z: swing sword left    v: swing sword right', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
+        this.controls1Text = this.add.text(600, 500, 'x: swing sword up     c: swing sword down', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
+        this.controls2Text = this.add.text(600, 550, 'r: to restart game', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
 
         // font styles for hovering and normal
         const normalStyle = { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff' };
-        const hoverStyle = { fontFamily: 'Comic Sans MS', fontSize: 80, color: '#ffffff' };
+        const hoverStyle = { fontFamily: 'Comic Sans MS', fontSize: 80, color: '#0ffffff' };
 
         // bold when hovered
         this.playText.on('pointerover', () => {
@@ -54,9 +59,6 @@ class Start extends Phaser.Scene {
             this.handleSceneChange();
         });
 
-        // update HTML description
-        document.getElementById('description').innerHTML = '<h2>Start.js</h2><br>'
-
     }
 
     update() {
@@ -64,7 +66,7 @@ class Start extends Phaser.Scene {
 
         // for testing purposes
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-            this.scene.start("loadScene", { score: this.score });
+            this.scene.start("loadScene", { score: 0 });
         }
 
     }
@@ -76,7 +78,7 @@ class Start extends Phaser.Scene {
 
         // Optionally, add a brief delay before transitioning to the new scene
         this.time.delayedCall(100, () => {
-            this.scene.start("loadScene", { score: this.score });
+            this.scene.start("loadScene", { health: 10, score: 0});
         });
     }
 }
