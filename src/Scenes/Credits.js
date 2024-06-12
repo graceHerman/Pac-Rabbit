@@ -90,6 +90,7 @@ class Credits extends Phaser.Scene {
     update() {
         let my = this.my;
 
+        // for testing purposes
         if (Phaser.Input.Keyboard.JustDown(this.nextScene)) {
             this.scene.start("start");
         }
