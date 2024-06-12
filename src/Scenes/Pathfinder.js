@@ -8,6 +8,12 @@ class Pathfinder extends Phaser.Scene {
         this.invinceDura = 1000;
     }
 
+    resetGame() {
+        this.score = 0;
+        this.health = 10;
+        this.scene.restart();
+    }
+
     preload() {
 
     }
@@ -20,6 +26,9 @@ class Pathfinder extends Phaser.Scene {
         this.playerSpeed = 2;
 
         this.PARTICLE_VELOCITY = 50;
+
+        this.score = 0;
+        this.health = 10;
     }
 
     create() {
@@ -192,6 +201,8 @@ class Pathfinder extends Phaser.Scene {
         this.cKey = this.input.keyboard.addKey("C");
         this.vKey = this.input.keyboard.addKey("V");
 
+        this.nKey = this.input.keyboard.addKey("N");
+
         // make a score text 
         this.scoreText = this.add.text(525, 5, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
         this.healthText = this.add.text(400, 5, 'Health: ' + this.health, { fontFamily: 'Comic Sans MS', fontSize: 18, color: '#0ffffff' });
@@ -296,9 +307,7 @@ class Pathfinder extends Phaser.Scene {
 
         // allows you to restart the game 
         if (Phaser.Input.Keyboard.JustDown(this.reset)) {
-            this.score = 0;
-            this.health = 10;
-            this.scene.restart();
+            this.resetGame();
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.zKey)) {
@@ -309,6 +318,11 @@ class Pathfinder extends Phaser.Scene {
             this.swingSword('down');
         } else if (Phaser.Input.Keyboard.JustDown(this.vKey)) {
             this.swingSword('right');
+        }
+
+        // for testing purposes
+        if (Phaser.Input.Keyboard.JustDown(this.nKey)) {
+            this.scene.start("credits", {score: this.score});
         }
     }
 
