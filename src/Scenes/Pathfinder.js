@@ -53,6 +53,8 @@ class Pathfinder extends Phaser.Scene {
         // Create townsfolk sprite
         // Use setOrigin() to ensure the tile space computations work well
         my.sprite.playerRabbit = this.physics.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "rabbit").setOrigin(0,0); //changes the spawn location of the player.
+        my.sprite.playerRabbit.depth = 1;
+        my.sprite.finishFlag = this.physics.add.sprite(this.tileXtoWorld(29), this.tileYtoWorld(5), "finishFlag").setOrigin(0,0); //changes the spawn location of the player.
 
         // regular carrots
         my.sprite.carrot = this.physics.add.sprite(this.tileXtoWorld(7), this.tileYtoWorld(21), "carrot").setOrigin(0,0);
@@ -116,6 +118,8 @@ class Pathfinder extends Phaser.Scene {
         this.sword.setOrigin(0.5, 1);
         this.sword.visible = false;
 
+        this.physics.add.overlap(my.sprite.playerRabbit, my.sprite.finishFlag, this.handleFinishFlagCollision, null, this);
+
         //Creates a walking animation for the player.
         this.anims.create({
             key: "rabbitWalk",
@@ -130,7 +134,7 @@ class Pathfinder extends Phaser.Scene {
         //This will help us increment score and add enemy damaging.
 
         //trying to figure out why this doesnt work.
-        this.walkingParticles = this.add.particles(0,0, 'walking',{
+        this.walkingParticles = this.add.particles(8,8, 'walking',{
             speed: { min: -50, max: 50 },
             angle: { min: 0, max: 360 },
             scale: { start: 0.02, end: 0 },
@@ -138,10 +142,11 @@ class Pathfinder extends Phaser.Scene {
             lifespan: 500,
             blendMode: 'ADD',
             follow: my.sprite.playerRabbit,
-            offsetX: 8,
-            offsetY: 8,
+            //offsetX: 8,
+            //offsetY: 8,
             on: false // Start the emitter in an inactive state
         });
+        this.walkingParticles.depth = 0;
         this.walkingParticles.stop();
         
 
@@ -210,7 +215,7 @@ class Pathfinder extends Phaser.Scene {
                 this.walkSound.play();
                 console.log("Sound playing");
             }
-            this.walkingParticles.setPosition(my.sprite.playerRabbit.x+20, my.sprite.playerRabbit.y+8);
+            //this.walkingParticles.setPosition(my.sprite.playerRabbit.x + my.sprite.playerRabbit.width / 2, my.sprite.playerRabbit.y + my.sprite.playerRabbit.height / 2);
         } 
         else {
             if (this.walkSound.isPlaying) {
@@ -291,6 +296,8 @@ class Pathfinder extends Phaser.Scene {
 
         // allows you to restart the game 
         if (Phaser.Input.Keyboard.JustDown(this.reset)) {
+            this.score = 0;
+            this.health = 10;
             this.scene.restart();
         }
 
@@ -581,5 +588,10 @@ class Pathfinder extends Phaser.Scene {
         // Remove the enemy from the enemyData array
         this.enemyData = this.enemyData.filter(data => data.enemy !== enemy);
     }
+
+    handleFinishFlagCollision(player, finishFlag) {
+    // Start the "credits" scene with the player's score
+    this.scene.start("credits", { score: this.score });
+}
     
 }
