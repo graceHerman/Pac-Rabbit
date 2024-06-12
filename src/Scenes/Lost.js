@@ -11,6 +11,10 @@ class Lost extends Phaser.Scene {
         
     }
 
+    init(data) {
+        this.score = data.score || 0; // Retrieve the score from data, defaulting to 0 if not provided
+    }
+
     preload() {
         this.load.setPath("./assets/");
 
@@ -58,9 +62,6 @@ class Lost extends Phaser.Scene {
             this.handleSceneChange();
         });
 
-        // update HTML description
-        document.getElementById('description').innerHTML = '<h2>Start.js</h2><br>'
-
     }
 
     update() {
@@ -68,7 +69,7 @@ class Lost extends Phaser.Scene {
 
         // for testing purposes
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-            this.scene.start("loadScene", { score: 0 });
+            this.scene.start("loadScene", { previousScene: 'lostScene' });
         }
 
     }
@@ -80,7 +81,7 @@ class Lost extends Phaser.Scene {
 
         // Optionally, add a brief delay before transitioning to the new scene
         this.time.delayedCall(100, () => {
-            this.scene.start("loadScene", { score: this.score });
+            this.scene.start("loadScene", { health: 10 }, { score: 0 });
         });
     }
 }
