@@ -12,6 +12,7 @@ class Pathfinder extends Phaser.Scene {
     resetGame() {
         this.score = 0;
         this.health = 10;
+        this.invince = false;
         //this.scoretext.setText('Score: ' + this.score)
         //this.healthText.setText('Health: ' + this.health);
 
@@ -33,6 +34,7 @@ class Pathfinder extends Phaser.Scene {
 
         this.score = 0;
         this.health = 10;
+        this.invince = false;
         //this.highScore = data.highScore || 0;
     }
 
@@ -107,8 +109,12 @@ class Pathfinder extends Phaser.Scene {
             });
         }
 
+        console.log("before loop");
+        console.log("health before: " + this.health);
         for (let i = 0; i < this.enemyData.length; i++) {
             let enemy = this.enemyData[i].enemy;
+            console.log("got to loop");
+            //console.log("health after: " + this.health);
             this.physics.add.overlap(my.sprite.playerRabbit, enemy, this.handleEnemyCollision, null, this);
         }
 
@@ -416,10 +422,12 @@ class Pathfinder extends Phaser.Scene {
     }
     
     handleEnemyCollision(player, enemy) {
+        console.log("invinse: " + this.invince);
         if (!this.invince) {
             // Reduce player health by 1
             this.health--;
             this.healthText.setText('Health: ' + this.health);
+            console.log("health updated: " + this.health);
     
             // Set invincibility flag and start cooldown timer
             this.invince = true;
@@ -429,10 +437,11 @@ class Pathfinder extends Phaser.Scene {
     
             // Check if player health reaches 0
             if (this.health <= 0) {
+                this.invince = false;
                 // Game over logic
                 console.log("Game Over");
                 //this.scene.restart();
-                this.scene.start("lostScene", {score: this.score});
+                this.scene.start("lostScene", {health: this.health}, {score: this.score});
             }
         }
     }
