@@ -11,8 +11,8 @@ class Pathfinder extends Phaser.Scene {
     resetGame() {
         this.score = 0;
         this.health = 10;
-        this.scoretext.setText('Score: ' + this.score)
-        this.healthText.setText('Health: ' + this.health);
+        //this.scoretext.setText('Score: ' + this.score)
+        //this.healthText.setText('Health: ' + this.health);
 
         this.scene.restart();
     }
@@ -21,7 +21,7 @@ class Pathfinder extends Phaser.Scene {
 
     }
 
-    init() {
+    init() {//USED TO BE DATA IN THE ()
         this.TILESIZE = 16;
         this.SCALE = 2.0;
         this.TILEWIDTH = 40;
@@ -32,6 +32,7 @@ class Pathfinder extends Phaser.Scene {
 
         this.score = 0;
         this.health = 10;
+        //this.highScore = data.highScore || 0;
     }
 
     create() {
@@ -189,7 +190,7 @@ class Pathfinder extends Phaser.Scene {
 
         // Walking sound
         this.walkSound = this.sound.add('walkSound', { volume: 0.25 });
-
+        this.swordSound = this.sound.add('swordSwing', { volume: 0.25 });
         this.isRabbitMoving = false;
 
         this.input.keyboard.on('keydown-D', () => {
@@ -473,7 +474,7 @@ class Pathfinder extends Phaser.Scene {
         this.sword.angle = angle;
         this.sword.x += offsetX;
         this.sword.y += offsetY;
-
+        this.swordSound.play();
         this.physics.world.enable(this.sword);
 
         for (let i = 0; i < this.enemyData.length; i++) {
@@ -492,7 +493,7 @@ class Pathfinder extends Phaser.Scene {
             onComplete: () => {
                 // Hide the sword when the animation is complete
                 this.sword.visible = false;
-
+                this.swordSound.stop();
                 this.physics.world.disable(this.sword);
             }
         });

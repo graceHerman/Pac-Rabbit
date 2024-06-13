@@ -29,6 +29,7 @@ class Load extends Phaser.Scene {
 
         // play sound
         this.load.audio("walkSound", "footstep_grass_003.ogg");
+        this.load.audio("swordSwing", "impactPlate_light_003.ogg");
     }
 
     create() {

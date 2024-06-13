@@ -13,6 +13,14 @@ class Lost extends Phaser.Scene {
 
     init(data) {
         this.score = data.score || 0; // Retrieve the score from data, defaulting to 0 if not provided
+        this.highScore = parseInt(localStorage.getItem('highScore')) || 0;
+
+    // Update the high score if the current score is higher
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            localStorage.setItem('highScore', this.highScore.toString());
+        }
+    
     }
 
     preload() {
@@ -39,7 +47,7 @@ class Lost extends Phaser.Scene {
 
         // Create score text and play option
         this.scoreText = this.add.text(700, 450, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50});
-        
+        this.highScoreText = this.add.text(700, 500, 'High Score: ' + this.highScore, {fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'});
         this.playText = this.add.text(850, 600, 'Restart!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
 
         // font styles for hovering and normal
@@ -81,7 +89,7 @@ class Lost extends Phaser.Scene {
 
         // Optionally, add a brief delay before transitioning to the new scene
         this.time.delayedCall(100, () => {
-            this.scene.start("loadScene", { health: 10 }, { score: 0 });
+            this.scene.start("loadScene", { health: 10, score: 0, highScore: this.highScore});
         });
     }
 }
