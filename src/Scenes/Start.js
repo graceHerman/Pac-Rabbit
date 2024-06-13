@@ -78,7 +78,7 @@ class Start extends Phaser.Scene {
 
         // Optionally, add a brief delay before transitioning to the new scene
         this.time.delayedCall(100, () => {
-            this.scene.start("loadScene", { health:10, score: 0, maxScore: this.maxScore});
+            this.scene.start("loadScene", {health: this.health}, {score: this.score}, {maxScore: this.maxScore});
         });
     }
 }
