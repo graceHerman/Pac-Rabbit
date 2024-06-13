@@ -4,6 +4,7 @@ class Pathfinder extends Phaser.Scene {
 
         this.score = 0;
         this.health = 10;
+        this.maxScore = 0;
         this.invince = false;
         this.invinceDura = 1000;
     }
@@ -257,7 +258,7 @@ class Pathfinder extends Phaser.Scene {
 
         // for testing purposes
         if (Phaser.Input.Keyboard.JustDown(this.nKey)) {
-            this.scene.start("credits", {score: this.score});
+            this.scene.start("credits", {score: this.score, maxScore: this.maxScore});
         }
     }
 
@@ -510,7 +511,7 @@ class Pathfinder extends Phaser.Scene {
 
     handleFinishFlagCollision(player, finishFlag) {
     // Start the "credits" scene with the player's score
-    this.scene.start("credits", { score: this.score });
+    this.scene.start("credits", { score: this.score }, {maxScore: this.maxScore});
     }
     
 }
