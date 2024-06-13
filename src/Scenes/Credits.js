@@ -90,7 +90,7 @@ class Credits extends Phaser.Scene {
         });
 
         this.againText.on('pointerdown', () => {
-            this.scene.start("loadScene", {health: 10}, {score: 0}, {maxScore: this.maxScore});
+            this.scene.start("loadScene", {score: 0}, {maxScore: this.maxScore});
         });
 
     }
