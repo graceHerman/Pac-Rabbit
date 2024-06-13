@@ -41,15 +41,15 @@ class Lost extends Phaser.Scene {
         // Create key objects (for testing purposes)
         this.enterKey = this.input.keyboard.addKey("P");
 
-        this.titleText = this.add.text(650, 200, 'You lost', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#ffffff' });
-        this.titleText = this.add.text(620, 350, 'You got this! :)', { fontFamily: 'Comic Sans MS', fontSize: 65, color: '#ffffff' });
+        this.titleText = this.add.text(650, 150, 'You lost', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#ffffff' });
+        this.titleText = this.add.text(620, 300, 'You got this! :)', { fontFamily: 'Comic Sans MS', fontSize: 65, color: '#ffffff' });
 
         this.score = this.scene.settings.data.score;
 
         // Create score text and play option
-        this.scoreText = this.add.text(700, 450, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50});
-        this.highScoreText = this.add.text(700, 500, 'High Score: ' + this.highScore, {fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'});
-        this.playText = this.add.text(850, 600, 'Restart!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
+        this.scoreText = this.add.text(700, 400, 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50});
+        this.highScoreText = this.add.text(700, 475, 'High Score: ' + this.highScore, {fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'});
+        this.playText = this.add.text(850, 650, 'Restart!', { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff'}).setOrigin(0.5).setInteractive();
 
         // font styles for hovering and normal
         const normalStyle = { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff' };
