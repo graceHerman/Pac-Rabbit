@@ -37,7 +37,7 @@ class Start extends Phaser.Scene {
 
         this.controlsText = this.add.text(600, 450, 'z: swing sword left    v: swing sword right', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
         this.controls1Text = this.add.text(600, 500, 'x: swing sword up     c: swing sword down', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
-        this.controls2Text = this.add.text(600, 550, 'r: to restart game', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
+        this.controls2Text = this.add.text(600, 550, 'r: to restart game    Click with cursor to move', { fontFamily: 'Comic Sans MS', fontSize: 30, color: '#ffffff' });
 
         // font styles for hovering and normal
         const normalStyle = { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#ffffff' };
