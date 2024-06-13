@@ -10,8 +10,16 @@ class Credits extends Phaser.Scene {
     }
 
     init(data) {
-        this.maxScore = data.maxScore || 0;
+        //this.maxScore = data.maxScore || 0;
         this.score = data.score || 0; // Retrieve the score from data, defaulting to 0 if not provided
+
+        this.highScore = parseInt(localStorage.getItem('highScore')) || 0;
+
+        // Update the high score if the current score is higher
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            localStorage.setItem('highScore', this.highScore.toString());
+        }
     }
 
     preload() {
@@ -33,13 +41,9 @@ class Credits extends Phaser.Scene {
         // display the background image
         this.add.image(500, 300, "background").setScale(1.40);
 
-        if (this.maxScore < this.score) {
-            this.maxScore = this.score;
-        }
-
         // credits
         this.endText = this.add.text(250, 75, 'YOU DID IT! :D', { fontFamily: 'Comic Sans MS', fontSize: 100, color: '#0ffffff'});
-        this.scoreText = this.add.text(395, 200, 'Max Score: ' + this.maxScore + '      ' + 'Score: ' + this.score, { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#0ffffff'});
+        this.scoreText = this.add.text(395, 200, 'Score: ' + this.score + '      High Score: ' + this.highScore, { fontFamily: 'Comic Sans MS', fontSize: 50, color: '#0ffffff'});
 
         this.creditText = this.add.text(75, 275, 'Credits:', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
         this.credit1Text = this.add.text(75, 315, 'kenney_jumper-pack for player and enemies', { fontFamily: 'Comic Sans MS', fontSize: 25, color: '#0ffffff' });
